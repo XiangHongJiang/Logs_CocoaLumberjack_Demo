@@ -16,7 +16,8 @@ Demo文件：Demo 文件夹
 #### 安装教程
 
 1. cocoapods 安装
-2. pod 库
+2. pod 库（ pod 'CocoaLumberjack'    pod 'YYKit' ）
+
 
 #### 使用说明
 
@@ -70,3 +71,17 @@ NSLog(@"上传失败:%@",filePath);
 }
 }];
 }
+#### 效果图
+1. Demo功能图
+![image](https://github.com/XiangHongJiang/Logs_CocoaLumberjack_Demo/blob/master/Pic/Simulator%20Screen%20Shot%20-%20iPhone%20X%20-%202018-07-27%20at%2011.19.04.png)
+
+2. 文件
+![image](https://github.com/XiangHongJiang/Logs_CocoaLumberjack_Demo/blob/master/Pic/1532670329816.jpg)
+
+3. 控制台
+![image](https://github.com/XiangHongJiang/Logs_CocoaLumberjack_Demo/blob/master/Pic/1532670944903.jpg)
+
+4.文件位置及内容
+![image](https://github.com/XiangHongJiang/Logs_CocoaLumberjack_Demo/blob/master/Pic/1532671063991.jpg)
+![image](https://github.com/XiangHongJiang/Logs_CocoaLumberjack_Demo/blob/master/Pic/1532670440137.jpg)
+
