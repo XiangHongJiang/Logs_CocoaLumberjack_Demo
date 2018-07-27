@@ -73,7 +73,8 @@ NSLog(@"上传失败:%@",filePath);
 }
 #### 效果图
 1. Demo功能图
-![image](https://github.com/XiangHongJiang/Logs_CocoaLumberjack_Demo/blob/master/Pic/Simulator%20Screen%20Shot%20-%20iPhone%20X%20-%202018-07-27%20at%2011.19.04.png)
+<div align=center><img width="500" height="1083" src="https://github.com/XiangHongJiang/Logs_CocoaLumberjack_Demo/blob/master/Pic/Simulator%20Screen%20Shot%20-%20iPhone%20X%20-%202018-07-27%20at%2011.19.04.png"/></div>
+
 
 2. 文件
 ![image](https://github.com/XiangHongJiang/Logs_CocoaLumberjack_Demo/blob/master/Pic/1532670329816.jpg)
