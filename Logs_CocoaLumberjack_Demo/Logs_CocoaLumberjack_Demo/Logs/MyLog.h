@@ -16,7 +16,7 @@
 #define DOCUMENTS_PATH NSSearchPathForDirectoriesInDomains(NSDocumentDirectory, NSUserDomainMask, YES).lastObject
 #define oyToStr(desStr)             [NSString stringWithFormat:@"%@",desStr]
 
-#define USERID_Logs @"XX" //修改UserId 为当前登录的文件名
+#define USERID_Logs @"UserId" //修改UserId 为当前登录的文件名
 #define DeviceID_Logs @"DeviceId" //修改DeviceId 为当前设备UUID
 #define Phone_Logs @"PhoneNum" //修改phoneNumber 为当前登录的手机号
 

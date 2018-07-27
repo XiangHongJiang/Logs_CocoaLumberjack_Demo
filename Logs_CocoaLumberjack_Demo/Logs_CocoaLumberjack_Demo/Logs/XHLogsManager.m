@@ -261,7 +261,13 @@ void uncaughtExceptionHandler(NSException *exception)  {
         NSLog(@"上传 txt 文件: \n%@",filePath);
 #endif
         fileType = @"txt";
-
+        
+    }else if ([filePath containsString:@".log"]) {
+#ifdef DEBUG
+        NSLog(@"上传 log 文件: \n%@",filePath);
+#endif
+        fileType = @"log";
+        
     }else {//非固定的这几种格式
         
         return;

@@ -107,7 +107,7 @@
         
     }else {
         
-        if ([self.fileTypeName containsString:@"txt"]) {//txt
+        if ([self.fileTypeName containsString:@"txt"]||[self.fileTypeName containsString:@"log"]) {//txt
             
             [[NSFileManager defaultManager] createFileAtPath:filePath contents:nil attributes:nil];
         }
@@ -129,7 +129,7 @@
 
         [json_data writeToFile:filePath atomically:YES];
         
-    }else if ([self.fileTypeName containsString:@"txt"]) {//写成字符串文件
+    }else if ([self.fileTypeName containsString:@"txt"]||[self.fileTypeName containsString:@"log"]) {//写成字符串文件
             //1.通过字符串追加方式添加
             NSFileHandle *fileHandle = [NSFileHandle fileHandleForUpdatingAtPath:filePath];
             [fileHandle seekToEndOfFile];  //将节点跳到文件的末尾

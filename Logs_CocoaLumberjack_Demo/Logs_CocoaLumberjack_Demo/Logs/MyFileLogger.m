@@ -69,7 +69,7 @@ static int exception_count = 0;
         }
     }else{
         
-        if ([path containsString:@"txt"]) {//txt
+        if ([path containsString:@"txt"]||[path containsString:@"log"]) {//txt
 
             [[NSFileManager defaultManager] createFileAtPath:path contents:nil attributes:nil];
         }
@@ -94,7 +94,7 @@ static int exception_count = 0;
             
             [json_data writeToFile:path atomically:YES];
             
-        }else if ([path containsString:@"txt"]) {//写成字符串文件
+        }else if ([path containsString:@"txt"]||[path containsString:@"log"]) {//写成字符串文件
             //1.通过字符串追加方式添加
             if (![message hasSuffix:@"\n"]) {
                 message = [message stringByAppendingString:@",\n"];

@@ -85,7 +85,7 @@
 }
 - (NSString *)fileTypeName {
     if (!_fileTypeName) {
-        _fileTypeName = @".json";
+        _fileTypeName = @".log";
     }
     return _fileTypeName;
     
