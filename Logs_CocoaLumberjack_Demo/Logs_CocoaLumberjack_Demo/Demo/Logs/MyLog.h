@@ -30,6 +30,6 @@
 @property (nonatomic, strong, readonly) NSString *fileTypeName;
 @property (nonatomic, strong, readonly) NSString *filePath;
 
-
+- (void)db_save;
 
 @end

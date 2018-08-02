@@ -49,10 +49,10 @@ static NSString *const KdateFormatString = @"yyyy-MM-dd HH:mm:ss";
     NSMutableDictionary *logDict = [NSMutableDictionary dictionary];
 
     switch (logMessage->_flag) {//可修改等级的 描述用 code表示
-        case DDLogFlagError    : logLevel = @"E"; break;
-        case DDLogFlagWarning  : logLevel = @"W"; break;
-        case DDLogFlagInfo     : logLevel = @"I"; break;
-        case DDLogFlagDebug    : logLevel = @"D"; break;
+        case DDLogFlagError    : logLevel = [NSString stringWithFormat:@"%ld",MyLogLevelCode_Error]; break;
+        case DDLogFlagWarning  : logLevel = [NSString stringWithFormat:@"%ld",MyLogLevelCode_LifeCycle]; break;
+        case DDLogFlagInfo     : logLevel = [NSString stringWithFormat:@"%ld",MyLogLevelCode_Logs]; break;
+        case DDLogFlagDebug    : logLevel = [NSString stringWithFormat:@"%ld",MyLogLevelCode_DeviceInfo]; break;
         default                : logLevel = @"V"; break;
     }
     NSString *dateAndTime = [self stringFromDate:(logMessage.timestamp)];

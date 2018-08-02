@@ -31,14 +31,14 @@
         self.deleteInterval = 0;
         self.maxAge =maxAgeTime;//每天
         self.deleteOnEverySave = NO;
-        self.saveInterval = 1;//每1s保存一次
-        self.saveThreshold = 1;//当未保存的log达到1条时，会调用db_save方法保存，每1条保存一次
+        self.saveInterval = 60;//每1min保存一次
+        self.saveThreshold = 5;//当未保存的log达到 X 条时，会调用db_save方法保存，每 X 条保存一次
         
         //注册app切换到后台通知，保存日志到沙盒
-//                [[NSNotificationCenter defaultCenter] addObserver:self
-        //                                                 selector:@selector(saveLog)
-        //                                                     name:@"UIApplicationWillResignActiveNotification"
-        //                                                   object:nil];
+                [[NSNotificationCenter defaultCenter] addObserver:self
+                                                         selector:@selector(saveLog)
+                                                             name:@"UIApplicationWillResignActiveNotification"
+                                                           object:nil];
     }
     return self;
 }
@@ -86,62 +86,99 @@
     NSArray *oldLogMessagesArray = [_logMessagesArray copy];
     _logMessagesArray = [NSMutableArray arrayWithCapacity:0];
     
-    //用换行符，把所有的数据拼成一个大字符串
-    NSString *logMessagesString = [oldLogMessagesArray componentsJoinedByString:@"\n"];
-    
-    
-    //判断有没有文件夹，如果没有，就创建
+
+#pragma mark - 存储的内容
+    for (int i = 0; i < oldLogMessagesArray.count; i ++) {
+        NSString *logMessagesString = oldLogMessagesArray[i];
+        [self saveLogWithLogMessage:logMessagesString];
+    }
+}
+- (void)saveLogWithLogMessage:(NSString *)logMessagesString {
+#pragma mark - 存储的位置
+    //获取要存储的文件位置，判断有没有文件夹，如果没有，就创建
     NSString *createPath = self.filePath;
     NSString *filePath = [NSString stringWithFormat:@"%@/%@",createPath,self.fileName];
     if (![[NSFileManager defaultManager] fileExistsAtPath:createPath]) {
         [[NSFileManager defaultManager] createDirectoryAtPath:createPath withIntermediateDirectories:YES attributes:nil error:nil];
     }
-    NSMutableArray *logsArray = nil;
+    
+    NSMutableDictionary *logsDic = nil;
     if ([[NSFileManager defaultManager] fileExistsAtPath:filePath] ) {//文件存在
         
         if ([self.fileTypeName containsString:@"plist"]) {//plist
-            logsArray = [NSMutableArray arrayWithContentsOfFile:filePath];
+            
+            logsDic = [NSMutableDictionary dictionaryWithContentsOfFile:filePath];
         }else if ([self.fileTypeName containsString:@"json"]) {//json
-            logsArray = [NSJSONSerialization JSONObjectWithData:[NSData dataWithContentsOfFile:filePath] options:NSJSONReadingMutableContainers error:nil];
+            
+            logsDic= [NSJSONSerialization JSONObjectWithData:[NSData dataWithContentsOfFile:filePath] options:NSJSONReadingMutableContainers error:nil];
         }
-        
     }else {
         
         if ([self.fileTypeName containsString:@"txt"]||[self.fileTypeName containsString:@"log"]) {//txt
             
             [[NSFileManager defaultManager] createFileAtPath:filePath contents:nil attributes:nil];
         }
-
+    }
+    logsDic = logsDic? logsDic: [NSMutableDictionary new];
+    //json信息
+    NSDictionary *logInfoDict = [NSJSONSerialization JSONObjectWithData:[logMessagesString dataUsingEncoding:NSUTF8StringEncoding] options:NSJSONReadingMutableContainers error:nil];
+    //lever
+    NSInteger levelCode = [logInfoDict[@"logLevel"] integerValue];
+    NSDictionary *infoDic = logInfoDict;
+    
+    switch (levelCode) {
+        case MyLogLevelCode_DeviceInfo:{//设备信息
+            
+            NSDictionary *deviceInfoDict = [NSJSONSerialization JSONObjectWithData:[logInfoDict[@"logMsg"] dataUsingEncoding:NSUTF8StringEncoding] options:NSJSONReadingMutableContainers error:nil];
+            
+            [logsDic setValue:deviceInfoDict.count?deviceInfoDict : @"" forKey:@"DeviceInfo"];
+        }
+            break;
+        case MyLogLevelCode_LifeCycle:{//生命周期
+            NSMutableArray *lifeCycelArray = logsDic[@"LifeCycle"]? [NSMutableArray arrayWithArray:logsDic[@"LifeCycle"]]:[NSMutableArray new];
+            [lifeCycelArray addObject:infoDic];
+            [logsDic setValue:lifeCycelArray forKey:@"LifeCycle"];
+        }
+            break;
+        case MyLogLevelCode_Logs:{
+            
+            NSMutableArray *lifeCycelArray = logsDic[@"Logs"]? [NSMutableArray arrayWithArray:logsDic[@"Logs"]]:[NSMutableArray new];
+            [lifeCycelArray addObject:infoDic];
+            [logsDic setValue:lifeCycelArray forKey:@"Logs"];
+        }
+            break;
+        case MyLogLevelCode_Error:{
+            
+            NSMutableArray *lifeCycelArray = logsDic[@"Errors"]? [NSMutableArray arrayWithArray:logsDic[@"Errors"]]:[NSMutableArray new];
+            [lifeCycelArray addObject:infoDic];
+            [logsDic setValue:lifeCycelArray forKey:@"Errors"];
+        }
+            break;
+            
+        default:
+            break;
     }
     
-    logsArray = logsArray? logsArray : [NSMutableArray new];
-    
-    NSDictionary *infoDic = [NSJSONSerialization JSONObjectWithData:[logMessagesString dataUsingEncoding:NSUTF8StringEncoding] options:NSJSONReadingMutableContainers error:nil];
-    [logsArray addObject:infoDic];
-    
     if ([self.fileTypeName containsString:@"plist"]) {//写成plist文件
-      
-        [logsArray writeToFile:filePath atomically:YES];
-
+        
+        [logsDic writeToFile:filePath atomically:YES];
+        
     }else if ([self.fileTypeName containsString:@"json"]){//写成json文件
         
-        NSData *json_data = [NSJSONSerialization dataWithJSONObject:logsArray options:NSJSONWritingPrettyPrinted error:nil];
-
+        NSData *json_data = [NSJSONSerialization dataWithJSONObject:logsDic options:NSJSONWritingPrettyPrinted error:nil];
         [json_data writeToFile:filePath atomically:YES];
         
     }else if ([self.fileTypeName containsString:@"txt"]||[self.fileTypeName containsString:@"log"]) {//写成字符串文件
-            //1.通过字符串追加方式添加
-            NSFileHandle *fileHandle = [NSFileHandle fileHandleForUpdatingAtPath:filePath];
-            [fileHandle seekToEndOfFile];  //将节点跳到文件的末尾
-            NSData* stringData  = [[NSString stringWithFormat:@",\n%@",logMessagesString] dataUsingEncoding:NSUTF8StringEncoding];
-            [fileHandle writeData:stringData]; //追加写入数据
-            [fileHandle closeFile];
+        //1.通过字符串追加方式添加
+        NSFileHandle *fileHandle = [NSFileHandle fileHandleForUpdatingAtPath:filePath];
+        [fileHandle seekToEndOfFile];  //将节点跳到文件的末尾
+        NSData* stringData  = [[NSString stringWithFormat:@",\n%@",logMessagesString] dataUsingEncoding:NSUTF8StringEncoding];
+        [fileHandle writeData:stringData]; //追加写入数据
+        [fileHandle closeFile];
     }
     
-    //跳过iCloud上传
-//    [self addSkipBackupAttributeToItemAtPath:filePath];
-    
 }
+
 
 - (BOOL)addSkipBackupAttributeToItemAtPath:(NSString *) filePathString
 {

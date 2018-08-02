@@ -17,11 +17,16 @@ static XHLogsManager *logsManager = nil;
 @property (nonatomic, strong) MyLog * myLog;
 /** 框架DDFileLogger文件记录 */
 @property (nonatomic, strong) MyFileLogger * fileLog;
+/** 自定义输出格式*/
+@property (nonatomic, strong) MyLogFromatter * format;
 
 /** LOG类型*/
 @property (nonatomic, assign) LogType logType;
 /** 当前上传的类型*/
 @property (nonatomic, assign) UploadLogsType currentUploadType;
+/** 当前上传的文件路径*/
+@property (nonatomic, copy) NSString * currentUploadFilePath;
+
 
 /** 上传回调*/
 @property (nonatomic, copy) void(^completedBlock)(BOOL succeed,NSString *filePath);
@@ -30,6 +35,29 @@ static XHLogsManager *logsManager = nil;
 @end
 
 @implementation XHLogsManager
+
+#pragma mark - Lazy Load
+- (MyLog *)myLog {
+    
+    if (_myLog == nil) {
+        _myLog = [MyLog new];
+    }
+    return _myLog;
+}
+- (MyFileLogger *)fileLog {
+    
+    if (_fileLog == nil) {
+        
+        _fileLog = [[MyFileLogger alloc] initWithLogFileManager:[MyFileLoggerManagerDefault new]];
+    }
+    return _fileLog;
+}
+- (MyLogFromatter *)format {
+    if (_format == nil) {
+        _format = [MyLogFromatter new];
+    }
+    return _format;
+}
 
 #pragma mark - -------------- 初始化 -----------------
 + (instancetype)defaultManager {
@@ -68,27 +96,21 @@ static XHLogsManager *logsManager = nil;
     
     /** 先移除所有 再添加，防止重复*/
     [DDLog removeAllLoggers];
-    
-    /** 自定义的Log 格式*/
-    MyLogFromatter *format =  [MyLogFromatter new];
+
     
     /** Log类型*/
     switch (type) {
         case LogType_MyLog:
         {
-            MyLog *fileLogger = [[MyLog alloc] init];
-            self.myLog = fileLogger;
-            fileLogger.logFormatter = format;//日志格式
-            [DDLog addLogger:fileLogger];
+            self.myLog.logFormatter = self.format;
+            [DDLog addLogger:self.myLog];
         }
             
             break;
         case LogType_MyFileLogger:{
             
-            MyFileLogger *fileLogger = [[MyFileLogger alloc] initWithLogFileManager:[MyFileLoggerManagerDefault new]];
-            self.fileLog = fileLogger;
-            fileLogger.logFormatter = format;//日志格式
-            [DDLog addLogger:fileLogger];
+            self.fileLog.logFormatter = self.format;//日志格式
+            [DDLog addLogger:self.fileLog];
         }
             break;
         default:
@@ -96,9 +118,11 @@ static XHLogsManager *logsManager = nil;
     }
 
     /** 控制台Log*/
+#ifdef DEBUG
     [DDLog addLogger:[DDTTYLogger sharedInstance]];
-    [[DDTTYLogger sharedInstance] setLogFormatter:format];
-    
+    //    [[DDTTYLogger sharedInstance] setLogFormatter:self.format];
+
+#endif
     
 }
 
@@ -133,7 +157,7 @@ void uncaughtExceptionHandler(NSException *exception)  {
     NSString *jsonStr = [MyLogFromatter dictToJsonString:dict];
 
     //保存到系统日志，上传时，只需要上传系统日志即可。最后一条即为崩溃信息，可以存储多个文件，不会出现覆盖
-    DDLogError(@"%@",jsonStr);
+    MyLogError(@"%@",jsonStr);
     
 //    //可保存到本地，也可以上传，如果是下次上传，需要区分多个保存防止覆盖。
 //    NSString *errorLogPath = [NSString stringWithFormat:@"%@/Documents/error.log", NSHomeDirectory()];
@@ -145,15 +169,15 @@ void uncaughtExceptionHandler(NSException *exception)  {
 //        NSLog(@"将crash信息保存到本地成功：%@",errorLogPath);
 //    }
     
-    [[XHLogsManager defaultManager] upLoadLogsWithType:UploadLogsType_SysLogs andCompleteBlock:^(BOOL succeed,NSString *filePath) {
-       
-        if (succeed) {
-            NSLog(@"上传成功：%@",filePath);
-        }else {
-            NSLog(@"上传失败：%@",filePath);
-        }
-        
-    }];
+//    [[XHLogsManager defaultManager] upLoadLogsWithType:UploadLogsType_SysLogs andCompleteBlock:^(BOOL succeed,NSString *filePath) {
+//
+//        if (succeed) {
+//            NSLog(@"上传成功：%@",filePath);
+//        }else {
+//            NSLog(@"上传失败：%@",filePath);
+//        }
+//
+//    }];
 
 }
 #pragma mark - -------------- 预处理 -----------------
@@ -190,6 +214,11 @@ void uncaughtExceptionHandler(NSException *exception)  {
 //上传日志: 不同类型
 - (void)upLoadLogsWithType:(UploadLogsType)type andCompleteBlock:(void(^)(BOOL succeed,NSString *filePath))completedBlock{
     
+    [self upLoadLogsWithType:type andApplyCd:@"" andLogType:@"" andCompleteBlock:completedBlock];
+   
+}
+- (void)upLoadLogsWithType:(UploadLogsType)type andApplyCd:(NSString *)applyCd andLogType:(NSString *)logType andCompleteBlock:(void(^)(BOOL succeed,NSString *filePath))completedBlock {
+    
     self.currentUploadType = type;
     
     //0.根据类型获取需要上传的文件
@@ -200,7 +229,7 @@ void uncaughtExceptionHandler(NSException *exception)  {
             NSString *jsonResult = [MyLogFromatter dictToJsonString:dicInfo];
             NSData *jsonData = [jsonResult dataUsingEncoding:NSUTF8StringEncoding];
             //1.上传自定义收集的 信息
-            [self uploadData:jsonData WithfileName:@"jsonDic" andFileTypeName:@"json" andCompleteBlock:completedBlock];
+            [self uploadData:jsonData WithfileName:@"jsonDic" andFileTypeName:@"json" andApplyCd:applyCd andLogType:logType  andCompleteBlock:completedBlock];
         }
     }
     
@@ -210,8 +239,15 @@ void uncaughtExceptionHandler(NSException *exception)  {
         NSString *logPath = self.myLog.filePath;
         NSString *fileName = self.myLog.fileName;
         NSString *filePath = [NSString stringWithFormat:@"%@/%@",logPath,fileName];
-        /** 上传文件*/
-        [self uploadFileWithFilePath:filePath andCompleteBlock:completedBlock];
+        
+        dispatch_async(self.myLog->_loggerQueue, ^{
+            
+            [self.myLog db_save];
+            /** 上传文件*/
+            [self uploadFileWithFilePath:filePath andApplyCd:applyCd andLogType:logType andCompleteBlock:completedBlock];
+        });
+        
+        
         
     }else if (self.logType == LogType_MyFileLogger){
         
@@ -224,14 +260,14 @@ void uncaughtExceptionHandler(NSException *exception)  {
             
             NSString *filePath = logFilePaths[i];
             /** 上传文件*/
-            [self uploadFileWithFilePath:filePath andCompleteBlock:completedBlock];
+            [self uploadFileWithFilePath:filePath andApplyCd:applyCd andLogType:logType andCompleteBlock:completedBlock];
             
         }
     }
-   
+    
 }
 /** 通过文件路径上传文件，并确定是否下次上传*/
-- (void)uploadFileWithFilePath:(NSString *)filePath andCompleteBlock:(void(^)(BOOL succeed,NSString *filePath))completedBlock{
+- (void)uploadFileWithFilePath:(NSString *)filePath andApplyCd:(NSString *)applyCd andLogType:(NSString *)logType andCompleteBlock:(void(^)(BOOL succeed,NSString *filePath))completedBlock{
    
     //记录回调
     self.completedBlock = completedBlock;
@@ -240,6 +276,9 @@ void uncaughtExceptionHandler(NSException *exception)  {
     NSFileManager *fm = [NSFileManager defaultManager];
     if (![fm fileExistsAtPath:filePath]) return;//不存在，直接return；
     
+    if (filePath.length) {
+        self.currentUploadFilePath = filePath;
+    }
     
     NSString *fileType = @"";
     
@@ -280,41 +319,55 @@ void uncaughtExceptionHandler(NSException *exception)  {
     }
     
     NSData *data = [NSData dataWithContentsOfFile:filePath];
-    __weak typeof(self) weakSelf = self;
-
-    [self uploadData:data WithfileName:fileName andFileTypeName:fileType andCompleteBlock:^(BOOL succeed, NSString *path) {
+    
+    if ([filePath containsString:@".json"]) {
         
-        if (weakSelf.completedBlock) {
-           weakSelf.completedBlock(succeed,filePath);
-        }
-        
-    }];
+        NSDictionary *dict  = [NSJSONSerialization JSONObjectWithData:[NSData dataWithContentsOfFile:filePath] options:NSJSONReadingMutableContainers error:nil];
+        NSString *dataStr =  [MyLogFromatter dictToJsonString:dict];
+        data = [dataStr dataUsingEncoding:NSUTF8StringEncoding];
+        fileType = @"txt";
+//        fileName = [fileName replace:@".json" withString:@".txt"];
+        [fileName stringByReplacingOccurrencesOfString:@".json" withString:@".txt"];
+    }
 
+//    WS(weakSelf);
+//
+//    [self uploadData:data WithfileName:fileName andFileTypeName:fileType andApplyCd:applyCd andLogType:logType  andCompleteBlock:^(BOOL succeed, NSString *path) {
+//        SS(strongSelf);
+//        if (strongSelf.completedBlock) {
+//           strongSelf.completedBlock(succeed,weakSelf.currentUploadFilePath);
+//        }
+//
+//        if (succeed) {//删除文件
+//            [strongSelf deleteFileWithFilePath:weakSelf.currentUploadFilePath];
+//        }
+//    }];
 
 }
 
 /** 数据上传 ：调用 自己的网络框架进行数据传输*/
-- (void)uploadData:(NSData *)data WithfileName:(NSString *)fileName andFileTypeName:(NSString *)typeName andCompleteBlock:(void(^)(BOOL succeed,NSString *filePath))completedBlock {
+- (void)uploadData:(NSData *)data WithfileName:(NSString *)fileName andFileTypeName:(NSString *)typeName andApplyCd:(NSString *)applyCd andLogType:(NSString *)logType andCompleteBlock:(void(^)(BOOL succeed,NSString *filePath))completedBlock {
     
-//    NSMutableDictionary *params = [NSMutableDictionary new];
+    NSMutableDictionary *params = [NSMutableDictionary new];
 //
-//    [params setObject:@"0" forKey:@"logType"];
-//    [params setObject:@"" forKey:@"applyCd"];
-//    [params setObject:[TBLoginConfig shareLogin].userInfo.phone.length ? [TBLoginConfig shareLogin].userInfo.phone: @"15135145551" forKey:@"phoneNo"];
+//    [params setObject:isNotEmptyValue_Custom(logType, logType, @"0") forKey:@"logType"];
+//    [params setObject:isNotEmptyValue_Custom(applyCd, applyCd, @"") forKey:@"applyCd"];
+//
+//    [params setObject:[TBLoginConfig shareLogin].userInfo.phone.length ? [TBLoginConfig shareLogin].userInfo.phone: @"" forKey:@"phoneNo"];
 //    [params setObject:ST(kDfimName) forKey:@"dfimUserName"];
 //    [params setObject:ST(kDfimId) forKey:@"dfimId"];
-    
+//
 //    UploadParamModel *model = [[UploadParamModel alloc] init];
 //    model.data = data;
 //    model.mimeType = typeName.length?typeName:@"txt";
 //    model.fileName = fileName.length?fileName:[XHTools currentSystemTimeString];
 //    model.name = @"file";
-//
+
 //    NSString *urlStr = [NSString stringWithFormat:@"%@/%@",@"http://10.43.26.88:8080",@"log/uploadAppLog"];
-    
+//    
 //    [[XHNetAPIClient sharedClient] Upload:urlStr parameters:params uploadParam:model requestResult:^(NSDictionary *requestParams, NSInteger code, NSDictionary *responseObject) {
-    
-        //1.上传
+//    
+////        1.上传
 //        if (code == 0 && requestParams) {//
 //
 //            if (completedBlock) {
@@ -326,11 +379,21 @@ void uncaughtExceptionHandler(NSException *exception)  {
 //            }
 //        }
 //    }];
-    
-    if (completedBlock) {
-        completedBlock(YES,nil);
-    }
 
+    
+}
+/** 上传结束后删除文件*/
+- (void)deleteFileWithFilePath:(NSString *)filePath {
+    //0.存在路径
+    if (filePath.length) {
+        NSFileManager *fm = [NSFileManager defaultManager];
+        if (![fm fileExistsAtPath:filePath]) return;//不存在，直接return；
+        //删除日志文件
+        [fm removeItemAtPath:filePath error:nil];
+      
+        //新生成一个日志 （重新记录设备信息）
+        [self collectDeviceInfo];
+    }
     
 }
 
@@ -380,7 +443,6 @@ void uncaughtExceptionHandler(NSException *exception)  {
 
     }
     
-    
 #ifdef DEBUG
     NSLog(@"\n日志地址:\n%@",logPath);
 #endif
@@ -402,7 +464,7 @@ void uncaughtExceptionHandler(NSException *exception)  {
     }
     
     NSDateFormatter *dateFormatter = [[NSDateFormatter alloc] init];
-    [dateFormatter setDateFormat:@"yyyy-MM-dd"];// 日期到天
+    [dateFormatter setDateFormat:@"yyyyMMdd"];// 日期到天
     delDate = [dateFormatter dateFromString:[dateFormatter stringFromDate:prevDate] ];
     
     for (NSString *file in logFiles)
@@ -422,6 +484,14 @@ void uncaughtExceptionHandler(NSException *exception)  {
         }
     }
     
+}
+//收集设备信息 添加时自定义重写get方法
+- (void)collectDeviceInfo {
+    
+        NSDictionary *deviveInfoDic = [self.currentLogsInfoModel modelToJSONObject];
+        NSString *deviceInfoStr = [MyLogFromatter dictToJsonString:deviveInfoDic];
+       
+        MyLogDeviceInfo(deviceInfoStr);
 }
 
 @end

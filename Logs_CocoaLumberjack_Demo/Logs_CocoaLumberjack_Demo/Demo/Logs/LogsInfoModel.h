@@ -13,26 +13,35 @@
 /** 需要手动生成保存的日志信息：用于上传*/
 @interface LogsInfoModel : NSObject
 
-#pragma mark - 通用信息
-/** dfimid*/
-@property (nonatomic, copy) NSString * dfimid;
+
+#pragma mark - 通用设备信息
 /** 平台类型*/
 @property (nonatomic, copy) NSString * platform;
-/** 申请编号*/
-@property (nonatomic, copy) NSString * applyCd;
-/** 手机型号*/
-@property (nonatomic, copy) NSString * phoneVersion;
-/** 系统版本号*/
-@property (nonatomic, copy) NSString * sysVersion;
-/** 盒子版本号*/
-@property (nonatomic, copy) NSString * boxVersion;
+/** 操作系统版本: 10.1*/
+@property (nonatomic, copy) NSString * osVersion;
+/** 手机型号： iPhone 7*/
+@property (nonatomic, copy) NSString * phoneInfo;
+/** App版本号*/
+@property (nonatomic, copy) NSString * appVersion;
+/** App名称*/
+@property (nonatomic, copy) NSString * appName;
+/** 语言*/
+@property (nonatomic, copy) NSString * languageEnv;
+/** cpuType*/
+@property (nonatomic, copy) NSString * cpuType;
+/** carrierName：运营商*/
+@property (nonatomic, copy) NSString * carrierName;
+/** netWorkStates：网络状态*/
+@property (nonatomic, copy) NSString * netWorkStates;
+/** memory：总内存 M*/
+@property (nonatomic, copy) NSString *  totalMemory;
+/** memory：空闲内存 M*/
+@property (nonatomic, copy) NSString *  freeMemory;
+/** memory：已用内存 M*/
+@property (nonatomic, copy) NSString *  usedMemory;
 
 
 #pragma mark - 控制台Log日志信息 & 其他信息
-/** 当前控制器*/
-@property (nonatomic, copy) NSString * currentController;
-/** 时间*/
-@property (nonatomic, copy) NSString * timesTamp;
 /** appInfo*/
 @property (nonatomic, strong) NSMutableDictionary * launchInfo;
 

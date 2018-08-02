@@ -31,6 +31,8 @@ typedef NS_ENUM(NSInteger,LogType){
 
 @interface XHLogsManager : NSObject
 
+
+
 /** 之前上传的信息： 暂时不用，预留*/
 @property (nonatomic, strong) PreUploadLogsInfoModel * preUploadInfo;
 
@@ -52,8 +54,14 @@ void uncaughtExceptionHandler(NSException *exception);
 //上传日志: 不同类型
 - (void)upLoadLogsWithType:(UploadLogsType)type andCompleteBlock:(void(^)(BOOL succeed,NSString *filePath))completedBlock;
 
+//上传日志: 不同类型: applyCd : logType: 0,1,2
+- (void)upLoadLogsWithType:(UploadLogsType)type andApplyCd:(NSString *)applyCd andLogType:(NSString *)logType andCompleteBlock:(void(^)(BOOL succeed,NSString *filePath))completedBlock;
+
 //删除过期日志，默认在 - (void)prepare;里调用 LogType_MyLog (可以设置双有效)下有效：每天只保留一份文件，可修改位置到 启动 Log 时就调用,
 - (void)deleteOutOfDateLog;
+
+//收集设备信息
+- (void)collectDeviceInfo;
 
 @end
 
