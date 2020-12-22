@@ -491,7 +491,7 @@ void uncaughtExceptionHandler(NSException *exception)  {
         NSDictionary *deviveInfoDic = [self.currentLogsInfoModel modelToJSONObject];
         NSString *deviceInfoStr = [MyLogFromatter dictToJsonString:deviveInfoDic];
        
-        MyLogDeviceInfo(deviceInfoStr);
+        MyLogDeviceInfo(@"%@",deviceInfoStr);
 }
 
 @end
