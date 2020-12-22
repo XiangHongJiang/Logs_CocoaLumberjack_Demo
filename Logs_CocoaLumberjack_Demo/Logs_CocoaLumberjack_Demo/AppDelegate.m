@@ -9,6 +9,9 @@
 #import "AppDelegate.h"
 #import "ViewController.h"
 
+#import <UMCommon/UMCommon.h>
+#import <UMCommon/MobClick.h>
+#import <UMCommonLog/UMCommonLogHeaders.h>
 @interface AppDelegate ()
 
 @end
@@ -24,8 +27,12 @@
     [self.window makeKeyAndVisible];
     
     self.window.rootViewController = [[UINavigationController alloc] initWithRootViewController:[ViewController new]];
+   
+    [UMConfigure setLogEnabled:YES];
+    [UMCommonLogManager setUpUMCommonLogManager];
     
-    
+    [UMConfigure initWithAppkey:Umeng_AppKey channel:@"App Store"];
+
     return YES;
 }
 
