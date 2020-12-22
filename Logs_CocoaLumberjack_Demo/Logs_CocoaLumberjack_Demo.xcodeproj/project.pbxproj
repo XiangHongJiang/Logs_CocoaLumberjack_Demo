@@ -246,8 +246,7 @@
 				FC2A813321005C9F008F28A7 /* Sources */,
 				FC2A813421005C9F008F28A7 /* Frameworks */,
 				FC2A813521005C9F008F28A7 /* Resources */,
-				2EEA9DF79B877F60CB73814E /* [CP] Embed Pods Frameworks */,
-				0FE1C04F45038BFA089CEA4D /* [CP] Copy Pods Resources */,
+				9A8A79483B6FE914740224FA /* [CP] Copy Pods Resources */,
 			);
 			buildRules = (
 			);
@@ -367,36 +366,6 @@
 /* End PBXResourcesBuildPhase section */
 
 /* Begin PBXShellScriptBuildPhase section */
-		0FE1C04F45038BFA089CEA4D /* [CP] Copy Pods Resources */ = {
-			isa = PBXShellScriptBuildPhase;
-			buildActionMask = 2147483647;
-			files = (
-			);
-			inputPaths = (
-			);
-			name = "[CP] Copy Pods Resources";
-			outputPaths = (
-			);
-			runOnlyForDeploymentPostprocessing = 0;
-			shellPath = /bin/sh;
-			shellScript = "\"${SRCROOT}/Pods/Target Support Files/Pods-Logs_CocoaLumberjack_Demo/Pods-Logs_CocoaLumberjack_Demo-resources.sh\"\n";
-			showEnvVarsInLog = 0;
-		};
-		2EEA9DF79B877F60CB73814E /* [CP] Embed Pods Frameworks */ = {
-			isa = PBXShellScriptBuildPhase;
-			buildActionMask = 2147483647;
-			files = (
-			);
-			inputPaths = (
-			);
-			name = "[CP] Embed Pods Frameworks";
-			outputPaths = (
-			);
-			runOnlyForDeploymentPostprocessing = 0;
-			shellPath = /bin/sh;
-			shellScript = "\"${SRCROOT}/Pods/Target Support Files/Pods-Logs_CocoaLumberjack_Demo/Pods-Logs_CocoaLumberjack_Demo-frameworks.sh\"\n";
-			showEnvVarsInLog = 0;
-		};
 		84C22047129D2BDA7DD76FE1 /* [CP] Check Pods Manifest.lock */ = {
 			isa = PBXShellScriptBuildPhase;
 			buildActionMask = 2147483647;
@@ -413,6 +382,24 @@
 			runOnlyForDeploymentPostprocessing = 0;
 			shellPath = /bin/sh;
 			shellScript = "diff \"${PODS_PODFILE_DIR_PATH}/Podfile.lock\" \"${PODS_ROOT}/Manifest.lock\" > /dev/null\nif [ $? != 0 ] ; then\n    # print error to STDERR\n    echo \"error: The sandbox is not in sync with the Podfile.lock. Run 'pod install' or update your CocoaPods installation.\" >&2\n    exit 1\nfi\n# This output is used by Xcode 'outputs' to avoid re-running this script phase.\necho \"SUCCESS\" > \"${SCRIPT_OUTPUT_FILE_0}\"\n";
+			showEnvVarsInLog = 0;
+		};
+		9A8A79483B6FE914740224FA /* [CP] Copy Pods Resources */ = {
+			isa = PBXShellScriptBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+			);
+			inputPaths = (
+				"${PODS_ROOT}/Target Support Files/Pods-Logs_CocoaLumberjack_Demo/Pods-Logs_CocoaLumberjack_Demo-resources.sh",
+				"${PODS_ROOT}/UMCCommonLog/UMCommonLog/UMCommonLog.bundle",
+			);
+			name = "[CP] Copy Pods Resources";
+			outputPaths = (
+				"${TARGET_BUILD_DIR}/${UNLOCALIZED_RESOURCES_FOLDER_PATH}/UMCommonLog.bundle",
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+			shellPath = /bin/sh;
+			shellScript = "\"${PODS_ROOT}/Target Support Files/Pods-Logs_CocoaLumberjack_Demo/Pods-Logs_CocoaLumberjack_Demo-resources.sh\"\n";
 			showEnvVarsInLog = 0;
 		};
 /* End PBXShellScriptBuildPhase section */
@@ -601,6 +588,7 @@
 				GCC_PREFIX_HEADER = "$(SRCROOT)/Logs_CocoaLumberjack_Demo/Demo/Prefix/PrefixHeader.pch";
 				INFOPLIST_FILE = Logs_CocoaLumberjack_Demo/Info.plist;
 				LD_RUNPATH_SEARCH_PATHS = "$(inherited) @executable_path/Frameworks";
+				MARKETING_VERSION = 1.1;
 				PRODUCT_BUNDLE_IDENTIFIER = "MrYeL.Logs-CocoaLumberjack-Demo";
 				PRODUCT_NAME = "$(TARGET_NAME)";
 				TARGETED_DEVICE_FAMILY = "1,2";
@@ -616,6 +604,7 @@
 				GCC_PREFIX_HEADER = "$(SRCROOT)/Logs_CocoaLumberjack_Demo/Demo/Prefix/PrefixHeader.pch";
 				INFOPLIST_FILE = Logs_CocoaLumberjack_Demo/Info.plist;
 				LD_RUNPATH_SEARCH_PATHS = "$(inherited) @executable_path/Frameworks";
+				MARKETING_VERSION = 1.1;
 				PRODUCT_BUNDLE_IDENTIFIER = "MrYeL.Logs-CocoaLumberjack-Demo";
 				PRODUCT_NAME = "$(TARGET_NAME)";
 				TARGETED_DEVICE_FAMILY = "1,2";

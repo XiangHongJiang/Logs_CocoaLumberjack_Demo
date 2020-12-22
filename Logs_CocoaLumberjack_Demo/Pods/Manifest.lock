@@ -5,18 +5,31 @@ PODS:
   - CocoaLumberjack/Default (3.4.1)
   - CocoaLumberjack/Extensions (3.4.1):
     - CocoaLumberjack/Default
+  - UMCCommon (7.1.1)
+  - UMCCommonLog (2.0.0)
   - YYKit (1.0.9):
     - YYKit/no-arc (= 1.0.9)
   - YYKit/no-arc (1.0.9)
 
 DEPENDENCIES:
   - CocoaLumberjack
+  - UMCCommon (= 7.1.1)
+  - UMCCommonLog
   - YYKit
+
+SPEC REPOS:
+  trunk:
+    - CocoaLumberjack
+    - UMCCommon
+    - UMCCommonLog
+    - YYKit
 
 SPEC CHECKSUMS:
   CocoaLumberjack: 2e258a064cacc8eb9a2aca318e24d02a0a7fd56d
+  UMCCommon: f455f92c125342e360d6ad9eafe484945351eeb5
+  UMCCommonLog: 9b7ddde5d14a52fc1986ba5ac3121b8b2f433638
   YYKit: 7cda43304a8dc3696c449041e2cb3107b4e236e7
 
-PODFILE CHECKSUM: 9688abdfbe9c32ac590ea37b8b6fa9680dbe1923
+PODFILE CHECKSUM: 4cffe0e74b38d4f2ca7c4975985737f32e6edaab
 
-COCOAPODS: 1.3.1
+COCOAPODS: 1.10.0

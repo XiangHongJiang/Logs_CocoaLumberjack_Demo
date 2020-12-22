@@ -21,7 +21,7 @@ static const DDLogLevel ddLogLevel = DDLogLevelInfo;//收集 Error、Waring、In
 #import "XHLogsManager.h"
 #import <YYKit.h>
 
-
+#define Umeng_AppKey @"5fe15d1c0b4a4938464ddf3c"
 
 
 #endif /* PrefixHeader_pch */

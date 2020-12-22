@@ -32,7 +32,6 @@ typedef NS_ENUM(NSInteger,LogType){
 @interface XHLogsManager : NSObject
 
 
-
 /** 之前上传的信息： 暂时不用，预留*/
 @property (nonatomic, strong) PreUploadLogsInfoModel * preUploadInfo;
 
