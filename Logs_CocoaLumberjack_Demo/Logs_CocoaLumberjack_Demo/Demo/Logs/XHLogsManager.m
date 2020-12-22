@@ -88,7 +88,6 @@ static XHLogsManager *logsManager = nil;
     self.preUploadInfo = [PreUploadLogsInfoModel modelWithDictionary:preUploadInfo];
 }
 #pragma mark - -------------- 启用Log -----------------
-
 /** 通过类型，启用不同Log*/
 - (void)startLogsConfigWithLogType:(LogType)type {
     
@@ -97,7 +96,6 @@ static XHLogsManager *logsManager = nil;
     /** 先移除所有 再添加，防止重复*/
     [DDLog removeAllLoggers];
 
-    
     /** Log类型*/
     switch (type) {
         case LogType_MyLog:
@@ -184,31 +182,38 @@ void uncaughtExceptionHandler(NSException *exception)  {
 //启动预处理: 是否上传或删除 或写入日志 或判断是否已上传
 - (void)prepare {
     
-    //0.删除过期日志
-    [self deleteOutOfDateLog];
     
-    //1.若上次上传并失败，根据上次上传的类型，重新上传一次。 否则不操作
-    for (LogsFileInfoModel *model in self.preUploadInfo.logsFileInfoArray) {
+    dispatch_async(dispatch_get_global_queue(DISPATCH_QUEUE_PRIORITY_DEFAULT, 0), ^{
+       
+        //0.删除过期日志
+        [self deleteOutOfDateLog];
         
-        BOOL preUploadSucceed = model.uploadSucceed;//成功就不传了
-        BOOL needUpload = model.faildUploadNextTime;//不需要再传
+        //1.若上次上传并失败，根据上次上传的类型，重新上传一次。 否则不操作
+        for (LogsFileInfoModel *model in self.preUploadInfo.logsFileInfoArray) {
+            
+            BOOL preUploadSucceed = model.uploadSucceed;//成功就不传了
+            BOOL needUpload = model.faildUploadNextTime;//不需要再传
 
-        if (!preUploadSucceed && needUpload) {//是否失败需要重传
-            
-//                NSString *filePath = model.filePath;
-//                model.faildUploadNextTime = NO;//
-//                __weak typeof(self) weakSelf = self;
-//                __weak LogsFileInfoModel *weakModel = model;
-//                  // 1.重传
-//                [self uploadFileWithFilePath:filePath andCompleteBlock:^(BOOL succeed,NSString *path) {
-//
-//                    weakModel.uploadSucceed = succeed;
-//                    [weakSelf savePreUploadInfo:YES];
-//
-//                }];
-            
+            if (!preUploadSucceed && needUpload) {//是否失败需要重传
+                
+    //                NSString *filePath = model.filePath;
+    //                model.faildUploadNextTime = NO;//
+    //                __weak typeof(self) weakSelf = self;
+    //                __weak LogsFileInfoModel *weakModel = model;
+    //                  // 1.重传
+    //                [self uploadFileWithFilePath:filePath andCompleteBlock:^(BOOL succeed,NSString *path) {
+    //
+    //                    weakModel.uploadSucceed = succeed;
+    //                    [weakSelf savePreUploadInfo:YES];
+    //
+    //                }];
+                
+                }
             }
-        }
+        
+    });
+    
+   
 }
 #pragma mark - -------------- 上传 Start -----------------
 //上传日志: 不同类型

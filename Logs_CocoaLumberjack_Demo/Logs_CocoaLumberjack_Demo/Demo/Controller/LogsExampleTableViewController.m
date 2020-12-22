@@ -7,6 +7,7 @@
 //
 
 #import "LogsExampleTableViewController.h"
+#import "TestCustomerLogViewController.h"
 
 @interface LogsExampleTableViewController ()
 
@@ -22,7 +23,7 @@
     
     self.navigationItem.title = @"日志";
     
-    self.dataArray = @[@"启用Log",@"打印Log",@"上传Log",@"越界崩溃(使用前，先启用Log才会记录)"];
+    self.dataArray = @[@"启用Log",@"打印Log",@"上传Log",@"越界崩溃(使用前，先启用Log才会记录)",@"跳转自定义log输出"];
     [self.tableView registerClass:[UITableViewCell class] forCellReuseIdentifier:@"UITableViewCell"];
 
 }
@@ -67,10 +68,15 @@
         case 3:
             [self crashChoose];
             break;
+        case 4:
+            [self skipVC];
         default:
             break;
     }
     
+}
+- (void)skipVC{
+    [self.navigationController pushViewController:[TestCustomerLogViewController new] animated:NO];
 }
 - (void)crashChoose {
     

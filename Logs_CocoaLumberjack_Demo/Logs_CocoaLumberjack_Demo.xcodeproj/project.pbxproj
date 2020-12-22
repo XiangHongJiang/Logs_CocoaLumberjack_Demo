@@ -8,6 +8,7 @@
 
 /* Begin PBXBuildFile section */
 		CEEEFAF75B6790B8F93ED7E8 /* libPods-Logs_CocoaLumberjack_Demo.a in Frameworks */ = {isa = PBXBuildFile; fileRef = 7C4CA463E8ED3AC5CDA71C49 /* libPods-Logs_CocoaLumberjack_Demo.a */; };
+		F723EF052591E1BB004B1160 /* TestCustomerLogViewController.m in Sources */ = {isa = PBXBuildFile; fileRef = F723EF042591E1BB004B1160 /* TestCustomerLogViewController.m */; };
 		FC2A813C21005C9F008F28A7 /* AppDelegate.m in Sources */ = {isa = PBXBuildFile; fileRef = FC2A813B21005C9F008F28A7 /* AppDelegate.m */; };
 		FC2A813F21005C9F008F28A7 /* ViewController.m in Sources */ = {isa = PBXBuildFile; fileRef = FC2A813E21005C9F008F28A7 /* ViewController.m */; };
 		FC2A814221005C9F008F28A7 /* Main.storyboard in Resources */ = {isa = PBXBuildFile; fileRef = FC2A814021005C9F008F28A7 /* Main.storyboard */; };
@@ -48,6 +49,8 @@
 		04A4D43621267D756B962ADE /* Pods-Logs_CocoaLumberjack_Demo.release.xcconfig */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.xcconfig; name = "Pods-Logs_CocoaLumberjack_Demo.release.xcconfig"; path = "Pods/Target Support Files/Pods-Logs_CocoaLumberjack_Demo/Pods-Logs_CocoaLumberjack_Demo.release.xcconfig"; sourceTree = "<group>"; };
 		420CC69ACFDFE5A8F0BF5E18 /* Pods-Logs_CocoaLumberjack_Demo.debug.xcconfig */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.xcconfig; name = "Pods-Logs_CocoaLumberjack_Demo.debug.xcconfig"; path = "Pods/Target Support Files/Pods-Logs_CocoaLumberjack_Demo/Pods-Logs_CocoaLumberjack_Demo.debug.xcconfig"; sourceTree = "<group>"; };
 		7C4CA463E8ED3AC5CDA71C49 /* libPods-Logs_CocoaLumberjack_Demo.a */ = {isa = PBXFileReference; explicitFileType = archive.ar; includeInIndex = 0; path = "libPods-Logs_CocoaLumberjack_Demo.a"; sourceTree = BUILT_PRODUCTS_DIR; };
+		F723EF032591E1BB004B1160 /* TestCustomerLogViewController.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = TestCustomerLogViewController.h; sourceTree = "<group>"; };
+		F723EF042591E1BB004B1160 /* TestCustomerLogViewController.m */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.objc; path = TestCustomerLogViewController.m; sourceTree = "<group>"; };
 		FC2A813721005C9F008F28A7 /* Logs_CocoaLumberjack_Demo.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = Logs_CocoaLumberjack_Demo.app; sourceTree = BUILT_PRODUCTS_DIR; };
 		FC2A813A21005C9F008F28A7 /* AppDelegate.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = AppDelegate.h; sourceTree = "<group>"; };
 		FC2A813B21005C9F008F28A7 /* AppDelegate.m */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.objc; path = AppDelegate.m; sourceTree = "<group>"; };
@@ -200,6 +203,8 @@
 			children = (
 				FC2A816C21005DE4008F28A7 /* LogsExampleTableViewController.h */,
 				FC2A816D21005DE4008F28A7 /* LogsExampleTableViewController.m */,
+				F723EF032591E1BB004B1160 /* TestCustomerLogViewController.h */,
+				F723EF042591E1BB004B1160 /* TestCustomerLogViewController.m */,
 			);
 			path = Controller;
 			sourceTree = "<group>";
@@ -414,6 +419,7 @@
 				FC49A777211302C300109448 /* MyLog.m in Sources */,
 				FC2A816E21005DE4008F28A7 /* LogsExampleTableViewController.m in Sources */,
 				FC49A779211302C300109448 /* XHLogsManager.m in Sources */,
+				F723EF052591E1BB004B1160 /* TestCustomerLogViewController.m in Sources */,
 				FC49A774211302C300109448 /* LogsInfoModel.m in Sources */,
 				FC49A778211302C300109448 /* MyLogFromatter.m in Sources */,
 				FC2A813C21005C9F008F28A7 /* AppDelegate.m in Sources */,
