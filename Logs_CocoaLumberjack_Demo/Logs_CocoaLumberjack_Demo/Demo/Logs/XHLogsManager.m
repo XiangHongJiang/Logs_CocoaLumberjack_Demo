@@ -8,6 +8,8 @@
 
 #import "XHLogsManager.h"
 
+static NSUncaughtExceptionHandler *_handle;
+
 static const NSString * crash_fileName = @"";
 
 static XHLogsManager *logsManager = nil;
@@ -86,7 +88,33 @@ static XHLogsManager *logsManager = nil;
     //上次上传的信息
     NSDictionary *preUploadInfo =  [[NSUserDefaults standardUserDefaults] objectForKey:preUploadInfoKey];
     self.preUploadInfo = [PreUploadLogsInfoModel modelWithDictionary:preUploadInfo];
+    //初始化基本数据
+    self.isHandleCrash = NO;
 }
+#pragma mark - -------------- setter and getter -----------------
+- (void)setIsHandleCrash:(BOOL)isHandleCrash {
+    _isHandleCrash = isHandleCrash;
+
+    NSUncaughtExceptionHandler *handle =    NSGetUncaughtExceptionHandler();
+    if (handle!=nil && handle!= uncaughtExceptionHandler) {
+        _handle = handle;
+    }
+    
+    if (_isHandleCrash == YES) {
+        //崩溃调用
+        NSSetUncaughtExceptionHandler(&uncaughtExceptionHandler);
+    }else{
+        //取消当前
+        if (handle == uncaughtExceptionHandler) {
+            NSSetUncaughtExceptionHandler(nil);
+        }
+        //恢复原先
+        if(_handle != nil){
+            NSSetUncaughtExceptionHandler(_handle);
+        }
+    }
+}
+
 #pragma mark - -------------- 启用Log -----------------
 /** 通过类型，启用不同Log*/
 - (void)startLogsConfigWithLogType:(LogType)type {
@@ -127,7 +155,7 @@ static XHLogsManager *logsManager = nil;
 #pragma mark - -------------- 崩溃处理 -----------------
 /** 奔溃调用*/
 void uncaughtExceptionHandler(NSException *exception)  {
-    
+
     //获取系统当前时间，（注：用[NSDate date]直接获取的是格林尼治时间，有时差）
     NSDateFormatter *formatter =[[NSDateFormatter alloc] init];
     [formatter setDateFormat:@"yyyy-MM-dd HH:mm:ss"];
@@ -157,6 +185,7 @@ void uncaughtExceptionHandler(NSException *exception)  {
     //保存到系统日志，上传时，只需要上传系统日志即可。最后一条即为崩溃信息，可以存储多个文件，不会出现覆盖
     MyLogError(@"%@",jsonStr);
     
+    
 //    //可保存到本地，也可以上传，如果是下次上传，需要区分多个保存防止覆盖。
 //    NSString *errorLogPath = [NSString stringWithFormat:@"%@/Documents/error.log", NSHomeDirectory()];
 //    NSError *error = nil;
@@ -167,15 +196,16 @@ void uncaughtExceptionHandler(NSException *exception)  {
 //        NSLog(@"将crash信息保存到本地成功：%@",errorLogPath);
 //    }
     
-//    [[XHLogsManager defaultManager] upLoadLogsWithType:UploadLogsType_SysLogs andCompleteBlock:^(BOOL succeed,NSString *filePath) {
-//
-//        if (succeed) {
-//            NSLog(@"上传成功：%@",filePath);
-//        }else {
-//            NSLog(@"上传失败：%@",filePath);
-//        }
-//
-//    }];
+    [[XHLogsManager defaultManager] upLoadLogsWithType:UploadLogsType_SysLogs andCompleteBlock:^(BOOL succeed,NSString *filePath) {
+
+        if (succeed) {
+            NSLog(@"上传成功：%@",filePath);
+        }else {
+            NSLog(@"上传失败：%@",filePath);
+        }
+
+    }];
+    
 
 }
 #pragma mark - -------------- 预处理 -----------------

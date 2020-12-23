@@ -10,7 +10,6 @@
 #import "MyFileLoggerManagerDefault.h"
 
 
-
 @implementation MyFileLogger
 
 - (instancetype)init {
@@ -42,6 +41,7 @@ static int exception_count = 0;
         NSString *filePath =self.currentLogFileInfo.filePath;
         [self saveLogMessage:message withFilePath:filePath];
     }
+    
     
 }
 /** 保存数据*/

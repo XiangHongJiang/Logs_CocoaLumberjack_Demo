@@ -13,6 +13,8 @@
 /** shuju*/
 @property (nonatomic, copy) NSArray *dataA;
 
+
+
 @end
 
 @implementation TestCustomerLogViewController
@@ -71,6 +73,10 @@
             break;
     }
     
+    NSMutableArray *ma = @[];
+    [ma addObject:@1];
+    
 }
+
 
 @end

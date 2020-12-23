@@ -39,6 +39,9 @@
                                                          selector:@selector(saveLog)
                                                              name:@"UIApplicationWillResignActiveNotification"
                                                            object:nil];
+        //app手动退出
+           [[NSNotificationCenter defaultCenter] addObserver:self selector:@selector(saveLog) name:UIApplicationWillTerminateNotification object:nil];
+    
     }
     return self;
 }
@@ -212,7 +215,7 @@
 }
 - (NSString *)fileTypeName {
     if (!_fileTypeName) {
-        _fileTypeName = @".json";
+        _fileTypeName = @".plist";
     }
     return _fileTypeName;
     

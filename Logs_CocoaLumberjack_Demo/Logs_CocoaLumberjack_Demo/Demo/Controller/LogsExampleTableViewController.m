@@ -14,6 +14,8 @@
 /** 数据Array*/
 @property (nonatomic, copy) NSArray * dataArray;
 
+
+
 @end
 
 @implementation LogsExampleTableViewController
@@ -23,7 +25,7 @@
     
     self.navigationItem.title = @"日志";
     
-    self.dataArray = @[@"启用Log",@"打印Log",@"上传Log",@"越界崩溃(使用前，先启用Log才会记录)",@"跳转自定义log输出"];
+    self.dataArray = @[@"启用Log",@"打印Log",@"上传Log",@"越界崩溃(使用前，先启用Log才会记录)",@"跳转自定义log输出",@"开启\关闭崩溃监听"];
     [self.tableView registerClass:[UITableViewCell class] forCellReuseIdentifier:@"UITableViewCell"];
 
 }
@@ -70,6 +72,9 @@
             break;
         case 4:
             [self skipVC];
+        case 5:
+            [XHLogsManager defaultManager].isHandleCrash = ![XHLogsManager defaultManager].isHandleCrash;
+            break;
         default:
             break;
     }
@@ -86,14 +91,14 @@
 #pragma mark - Action
 /** 启用日志:与用户绑定，登录成功后启用，登录之前的信息，可通过自定义收集信息先记录*/
 - (void)starLog {
-    //崩溃调用
-    NSSetUncaughtExceptionHandler(&uncaughtExceptionHandler);
+    
     //启用
     [[XHLogsManager defaultManager] startLogsConfigWithLogType:LogType_MyLog];
     //预处理：删除 \上传之前失败的，默认不上传，调用上传
     [[XHLogsManager defaultManager] prepare];
-    
+   
 }
+
 //记录收集
 - (void)logsCollect {
     

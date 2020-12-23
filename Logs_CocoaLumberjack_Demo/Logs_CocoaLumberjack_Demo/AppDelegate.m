@@ -28,10 +28,10 @@
     
     self.window.rootViewController = [[UINavigationController alloc] initWithRootViewController:[ViewController new]];
    
-    [UMConfigure setLogEnabled:YES];
-    [UMCommonLogManager setUpUMCommonLogManager];
-    
-    [UMConfigure initWithAppkey:Umeng_AppKey channel:@"App Store"];
+//    [UMConfigure setLogEnabled:YES];
+//    [UMCommonLogManager setUpUMCommonLogManager];
+//
+//    [UMConfigure initWithAppkey:Umeng_AppKey channel:@"App Store"];
 
     return YES;
 }

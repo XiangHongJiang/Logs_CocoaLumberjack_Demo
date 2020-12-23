@@ -14,6 +14,8 @@
 #import "MyFileLogger.h" //继承DDfileLogger
 #import "MyFileLoggerManagerDefault.h"//继承 DD
 
+
+
 static  NSString *const preUploadInfoKey = @"preUploadInfo";
 
 typedef NS_ENUM(NSInteger,UploadLogsType){
@@ -38,9 +40,12 @@ typedef NS_ENUM(NSInteger,LogType){
 /** 当前自定义log信息：用来手动收集信息：不变的值建议重写 get方法*/
 @property (nonatomic, strong) LogsInfoModel * currentLogsInfoModel;
 
+/** 是否开启奔溃统计:默认关闭*/
+@property (nonatomic, assign) BOOL isHandleCrash;
+
+
 //奔溃调用
 void uncaughtExceptionHandler(NSException *exception);
-
 //创建并初始化设置
 + (instancetype)defaultManager;
 

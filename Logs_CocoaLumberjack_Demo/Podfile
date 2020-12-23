@@ -9,5 +9,7 @@ pod 'YYKit'
 pod 'UMCCommon','7.1.1'
 pod 'UMCCommonLog'
 pod 'ByebyeUnicode'
+# 百度统计无埋点SDK
+#pod 'BaiduMobStatCodeless'
 
 end
