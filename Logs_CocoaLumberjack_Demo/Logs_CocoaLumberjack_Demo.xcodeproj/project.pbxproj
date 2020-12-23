@@ -9,6 +9,7 @@
 /* Begin PBXBuildFile section */
 		CEEEFAF75B6790B8F93ED7E8 /* libPods-Logs_CocoaLumberjack_Demo.a in Frameworks */ = {isa = PBXBuildFile; fileRef = 7C4CA463E8ED3AC5CDA71C49 /* libPods-Logs_CocoaLumberjack_Demo.a */; };
 		F723EF052591E1BB004B1160 /* TestCustomerLogViewController.m in Sources */ = {isa = PBXBuildFile; fileRef = F723EF042591E1BB004B1160 /* TestCustomerLogViewController.m */; };
+		F7E88C022593487F004325D5 /* data.txt in Resources */ = {isa = PBXBuildFile; fileRef = F7E88C012593487E004325D5 /* data.txt */; };
 		FC2A813C21005C9F008F28A7 /* AppDelegate.m in Sources */ = {isa = PBXBuildFile; fileRef = FC2A813B21005C9F008F28A7 /* AppDelegate.m */; };
 		FC2A813F21005C9F008F28A7 /* ViewController.m in Sources */ = {isa = PBXBuildFile; fileRef = FC2A813E21005C9F008F28A7 /* ViewController.m */; };
 		FC2A814221005C9F008F28A7 /* Main.storyboard in Resources */ = {isa = PBXBuildFile; fileRef = FC2A814021005C9F008F28A7 /* Main.storyboard */; };
@@ -51,6 +52,7 @@
 		7C4CA463E8ED3AC5CDA71C49 /* libPods-Logs_CocoaLumberjack_Demo.a */ = {isa = PBXFileReference; explicitFileType = archive.ar; includeInIndex = 0; path = "libPods-Logs_CocoaLumberjack_Demo.a"; sourceTree = BUILT_PRODUCTS_DIR; };
 		F723EF032591E1BB004B1160 /* TestCustomerLogViewController.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = TestCustomerLogViewController.h; sourceTree = "<group>"; };
 		F723EF042591E1BB004B1160 /* TestCustomerLogViewController.m */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.objc; path = TestCustomerLogViewController.m; sourceTree = "<group>"; };
+		F7E88C012593487E004325D5 /* data.txt */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text; path = data.txt; sourceTree = "<group>"; };
 		FC2A813721005C9F008F28A7 /* Logs_CocoaLumberjack_Demo.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = Logs_CocoaLumberjack_Demo.app; sourceTree = BUILT_PRODUCTS_DIR; };
 		FC2A813A21005C9F008F28A7 /* AppDelegate.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = AppDelegate.h; sourceTree = "<group>"; };
 		FC2A813B21005C9F008F28A7 /* AppDelegate.m */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.objc; path = AppDelegate.m; sourceTree = "<group>"; };
@@ -161,6 +163,7 @@
 				FC2A813B21005C9F008F28A7 /* AppDelegate.m */,
 				FC2A813D21005C9F008F28A7 /* ViewController.h */,
 				FC2A813E21005C9F008F28A7 /* ViewController.m */,
+				F7E88C012593487E004325D5 /* data.txt */,
 				FC2A814021005C9F008F28A7 /* Main.storyboard */,
 				FC2A814321005C9F008F28A7 /* Assets.xcassets */,
 				FC2A814521005C9F008F28A7 /* LaunchScreen.storyboard */,
@@ -348,6 +351,7 @@
 			isa = PBXResourcesBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
+				F7E88C022593487F004325D5 /* data.txt in Resources */,
 				FC2A814721005C9F008F28A7 /* LaunchScreen.storyboard in Resources */,
 				FC2A814421005C9F008F28A7 /* Assets.xcassets in Resources */,
 				FC2A814221005C9F008F28A7 /* Main.storyboard in Resources */,

@@ -12,10 +12,12 @@
 
 /** 自定义Log 信息*/
 @interface MyLog ()
+{
+
+}
 
 /**日志数组 */
 @property (nonatomic, strong) NSMutableArray *logMessagesArray;
-
 
 @end
 
@@ -24,6 +26,7 @@
 @synthesize fileTypeName = _fileTypeName;
 @synthesize filePath = _filePath;
 @synthesize filePreName = _filePreName;
+
 
 - (instancetype)init {
     self = [super init];
@@ -36,20 +39,14 @@
         
         //注册app切换到后台通知，保存日志到沙盒
                 [[NSNotificationCenter defaultCenter] addObserver:self
-                                                         selector:@selector(saveLog)
+                                                         selector:@selector(db_save)
                                                              name:@"UIApplicationWillResignActiveNotification"
                                                            object:nil];
         //app手动退出
-           [[NSNotificationCenter defaultCenter] addObserver:self selector:@selector(saveLog) name:UIApplicationWillTerminateNotification object:nil];
+           [[NSNotificationCenter defaultCenter] addObserver:self selector:@selector(db_save) name:UIApplicationWillTerminateNotification object:nil];
     
     }
     return self;
-}
-
-- (void)saveLog {
-    dispatch_async(_loggerQueue, ^{
-        [self db_save];
-    });
 }
 
 /**
@@ -68,6 +65,9 @@
     
     //利用 formatter 得到消息字符串，添加到缓存，当调用db_save时，写入沙盒
     [_logMessagesArray addObject:[_logFormatter formatLogMessage:logMessage]];
+    
+    
+    
     return YES;
 }
 
@@ -77,24 +77,28 @@
  *
  */
 - (void)db_save{
-    //判断是否在 logger 自己的GCD队列中
-    if (![self isOnInternalLoggerQueue])
-        NSAssert(NO, @"db_saveAndDelete should only be executed on the internalLoggerQueue thread, if you're seeing this, your doing it wrong.");
     
-    //如果缓存内没数据，啥也不做
-    if ([_logMessagesArray count] == 0) {
-        return;
-    }
-    //获取缓存中所有数据，之后将缓存清空
-    NSArray *oldLogMessagesArray = [_logMessagesArray copy];
-    _logMessagesArray = [NSMutableArray arrayWithCapacity:0];
-    
-
+    dispatch_async(_loggerQueue, ^{
+        //判断是否在 logger 自己的GCD队列中
+        if (![self isOnInternalLoggerQueue])
+            NSAssert(NO, @"db_saveAndDelete should only be executed on the internalLoggerQueue thread, if you're seeing this, your doing it wrong.");
+        
+        //如果缓存内没数据，啥也不做
+        if ([_logMessagesArray count] == 0) {
+            return;
+        }
+        //获取缓存中所有数据，之后将缓存清空
+        NSArray *oldLogMessagesArray = [_logMessagesArray copy];
+        _logMessagesArray = [NSMutableArray arrayWithCapacity:0];
+        
+        
 #pragma mark - 存储的内容
-    for (int i = 0; i < oldLogMessagesArray.count; i ++) {
-        NSString *logMessagesString = oldLogMessagesArray[i];
-        [self saveLogWithLogMessage:logMessagesString];
-    }
+        for (int i = 0; i < oldLogMessagesArray.count; i ++) {
+            NSString *logMessagesString = oldLogMessagesArray[i];
+            [self saveLogWithLogMessage:logMessagesString];
+        }
+        
+    });
 }
 - (void)saveLogWithLogMessage:(NSString *)logMessagesString {
 #pragma mark - 存储的位置
@@ -215,7 +219,7 @@
 }
 - (NSString *)fileTypeName {
     if (!_fileTypeName) {
-        _fileTypeName = @".plist";
+        _fileTypeName = @".txt";
     }
     return _fileTypeName;
     

@@ -11,7 +11,7 @@
 @interface TestCustomerLogViewController ()
 
 /** shuju*/
-@property (nonatomic, copy) NSArray *dataA;
+@property (nonatomic, strong) NSMutableArray *dataA;
 
 
 
@@ -22,9 +22,11 @@
 - (void)viewDidLoad {
     [super viewDidLoad];
     
-    self.dataA = @[@"崩溃信息记录",@"警告记录",@"基本info记录"];
+    self.dataA = [NSMutableArray arrayWithArray:@[@"崩溃信息记录",@"警告记录",@"基本info记录",@"添加数据",@"大文件数据写入"]];
     [self.tableView registerClass:[UITableViewCell class] forCellReuseIdentifier:@"TestCustomerLogViewController"];
-
+    
+    self.navigationItem.rightBarButtonItem = [[UIBarButtonItem alloc]
+                                              initWithTitle:@"奔溃测试" style:UIBarButtonItemStylePlain target:self action:@selector(crashTest)];
 }
 
 - (void)didReceiveMemoryWarning {
@@ -69,14 +71,38 @@
         case 2:
             DDLogInfo(@"%@",self.dataA);
             break;
+        case 3:
+            [self addData];
+            break;
+        case 4:
+            [self writeBigDataLog];
+            break;
         default:
             break;
     }
     
-    NSMutableArray *ma = @[];
-    [ma addObject:@1];
     
 }
+- (void)addData {
+    [self.dataA addObject:[NSString stringWithFormat:@"%ld",self.dataA.count+1]];
+    
+    [self.tableView reloadData];
+}
+- (void)crashTest {
+    
+    NSMutableArray *mA = @[];
+    [mA addObject:@1];
+}
 
+- (void)writeBigDataLog {
+    NSString *filePath = [[NSBundle mainBundle] pathForResource:@"data" ofType:@".txt"];
+    NSString *str = [NSString stringWithContentsOfFile:filePath encoding:NSUTF8StringEncoding error:nil];
+    DDLogInfo(@"%@",str);
+}
+- (void)scrollViewDidScroll:(UIScrollView *)scrollView {
+    //压力测试
+    DDLogInfo(@"contentOffset.y :%.2f",scrollView.contentOffset.y);
+//    [self writeBigDataLog];
+}
 
 @end
